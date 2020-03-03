@@ -10,7 +10,7 @@ public class Banker{
         need = new int[nProcesses][nResources];
     }
     public void addResource(){
-        
+
     }
     public void addMax(){
 
@@ -25,7 +25,7 @@ public class Banker{
         //TODO Implement safety Algorithm
         /*
         1.
-            Let Work and Finish be vectors of length m and n, respectively. 
+            Let Work and Finish be vectors of length m and n, respectively.
             Initialize: Work = Available
             Finish [i] = false for i = 0, 1, …, n- 1
         2.
@@ -53,10 +53,10 @@ public class Banker{
                 If Requesti  Needi go to step 2. Otherwise, raise error
                 condition, since process has exceeded its maximum
                 claim
-            2. 
+            2.
                 If Requesti  Available, go to step 3. Otherwise Pi
                 must wait, since resources are not available
-            3. 
+            3.
                 Pretend to allocate requested resources to Pi by
                 modifying the state as follows:
                 Available = Available – Requesti;
