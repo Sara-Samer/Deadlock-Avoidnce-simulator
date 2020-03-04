@@ -27,26 +27,43 @@ public class Banker{
 
     }
     public boolean isSafe(){
-        //TODO Implement safety Algorithm
-        int []work = available; // 1.Let Work and Finish be vectors of length m and n, respectively. // Initialize: Work = Available
-        Boolean[] finish = new Boolean[nProcesses]; //  Finish [i] = false for i = 0, 1, …, n- 1
+        //TODO test safety Algorithm
+        int []work = available;                         // 1.Let Work and Finish be vectors of length m and n, respectively. // Initialize: Work = Available
+        Boolean[] finish = new Boolean[nProcesses];     //  Finish [i] = false for i = 0, 1, …, n- 1
         Arrays.fill(finish, Boolean.FALSE);
-        /*
-        /*
-        2.
-            Find an i such that both:
-            (a) Finish [i] = false
-            (b) Needi  Work
-            If no such i exists, go to step 4
-        3.
-            Work = Work + Allocationi
-            Finish[i] = true
-            go to step 2
-        4.
-            If Finish [i] == true for all i, then the system
-            is in a safe state
-        */
-        return true;
+
+                                                        /*
+                                                        Need: n * m matrix. If Need[i, j] = k, then Pi may need k more instances of Rj to complete its task
+                                                         */
+        for (int i = 0; i <nProcesses ; i++) {
+            for (int j = 0; j <nResources ; j++) {
+                //Need [i, j] = Max[i, j] – Allocation [i, j]
+                need[i][j]=maximum[i][j]-allocated[i][j];
+            }
+        }
+        boolean unsafeState=false;
+        for (int i = 0; i <nProcesses ; i++){ //Find an i such that both:
+            if(!finish[i] ){     //a) Finish [i] = false //            (b) Needi <= Work
+                for (int j = 0; j <nResources ; j++) {
+                    if(!(need[i][j]<= work[j])){
+                        break;
+                    }
+                    if(j==nProcesses-1) {   // if true then we can remove this process
+                        finish[i]=true;
+                        for (int k = 0; k < nResources ; k++) { //if we remove this process we must return there resource to the work array
+                            if(need[i][j]<= work[j]){
+                                work[j]+=allocated[i][j];
+                            }
+                        }
+                        i=0;           // and we must search from the first because we can find new process with the new values
+                    }
+                }
+            }
+            if(finish[nProcesses-1]) {
+                return true; // if we finish all the array we can say "we are at the safe state "
+            }
+        }
+        return false; // if we finished the for i loop with out return true so we are in unsafe state
     }
     public boolean canGrantRequest(){
         //TODO Implement Request Algorithm
