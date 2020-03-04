@@ -1,16 +1,21 @@
+import java.util.Arrays;
+
 public class Banker{
     int[] available;
     int[][] maximum;
     int[][] allocated;
     int[][] need;
+    int nResources,nProcesses;
     Banker(int nResources, int nProcesses){
         available = new int[nResources];
         maximum = new int[nProcesses][nResources];
         allocated = new int[nProcesses][nResources];
         need = new int[nProcesses][nResources];
+        this.nResources= nResources;
+        this.nProcesses= nProcesses;
     }
     public void addResource(){
-        
+
     }
     public void addMax(){
 
@@ -23,11 +28,11 @@ public class Banker{
     }
     public boolean isSafe(){
         //TODO Implement safety Algorithm
+        int []work = available; // 1.Let Work and Finish be vectors of length m and n, respectively. // Initialize: Work = Available
+        Boolean[] finish = new Boolean[nProcesses]; //  Finish [i] = false for i = 0, 1, …, n- 1
+        Arrays.fill(finish, Boolean.FALSE);
         /*
-        1.
-            Let Work and Finish be vectors of length m and n, respectively. 
-            Initialize: Work = Available
-            Finish [i] = false for i = 0, 1, …, n- 1
+        /*
         2.
             Find an i such that both:
             (a) Finish [i] = false
@@ -53,10 +58,10 @@ public class Banker{
                 If Requesti  Needi go to step 2. Otherwise, raise error
                 condition, since process has exceeded its maximum
                 claim
-            2. 
+            2.
                 If Requesti  Available, go to step 3. Otherwise Pi
                 must wait, since resources are not available
-            3. 
+            3.
                 Pretend to allocate requested resources to Pi by
                 modifying the state as follows:
                 Available = Available – Requesti;
