@@ -14,33 +14,36 @@ public class Banker{
         this.nResources= nResources;
         this.nProcesses= nProcesses;
     }
-    public void addResource(){
-
+    public void addResource(int resource, int available){
+    	this.available[resource] = available;
     }
-    public void addMax(){
-
+    public void addMax(int process, int resource, int max){
+    	this.maximum[process][resource] = max;
     }
     public void addNeed(){
-
+    	for(int i = 0; i< this.nProcesses ; i++)
+    		for(int j = 0; j < this.nResources; j++)
+    			this.need[i][j] = this.maximum[i][j] - this.allocated[i][j];
     }
-    public void addAllocated(){
-
+    public void addAllocated(int process, int resource, int alloc){
+    	this.allocated[process][resource] = alloc;
     }
     public boolean isSafe(){
         //TODO test safety Algorithm
         int []work = available;                         // 1.Let Work and Finish be vectors of length m and n, respectively. // Initialize: Work = Available
-        Boolean[] finish = new Boolean[nProcesses];     //  Finish [i] = false for i = 0, 1, …, n- 1
+        Boolean[] finish = new Boolean[nProcesses];     //  Finish [i] = false for i = 0, 1, ..., n- 1
         Arrays.fill(finish, Boolean.FALSE);
 
                                                         /*
                                                         Need: n * m matrix. If Need[i, j] = k, then Pi may need k more instances of Rj to complete its task
                                                          */
-        for (int i = 0; i <nProcesses ; i++) {
-            for (int j = 0; j <nResources ; j++) {
-                //Need [i, j] = Max[i, j] – Allocation [i, j]
-                need[i][j]=maximum[i][j]-allocated[i][j];
-            }
-        }
+        this.addNeed();
+//        for (int i = 0; i <nProcesses ; i++) {
+//            for (int j = 0; j <nResources ; j++) {
+//                //Need [i, j] = Max[i, j] � Allocation [i, j]
+//                need[i][j]=maximum[i][j]-allocated[i][j];
+//            }
+//        }
         boolean unsafeState=false;
         for (int i = 0; i <nProcesses ; i++){ //Find an i such that both:
             if(!finish[i] ){     //a) Finish [i] = false //            (b) Needi <= Work
@@ -72,20 +75,20 @@ public class Banker{
             Requesti [j] = k then process Pi wants k instances
             of resource type Rj
             1.
-                If Requesti  Needi go to step 2. Otherwise, raise error
+                If Requesti ? Needi go to step 2. Otherwise, raise error
                 condition, since process has exceeded its maximum
                 claim
             2.
-                If Requesti  Available, go to step 3. Otherwise Pi
+                If Requesti ? Available, go to step 3. Otherwise Pi
                 must wait, since resources are not available
             3.
                 Pretend to allocate requested resources to Pi by
                 modifying the state as follows:
-                Available = Available – Requesti;
+                Available = Available � Requesti;
                 Allocationi = Allocationi + Requesti;
-                Needi = Needi – Requesti;
-             If safe  the resources are allocated to Pi
-             If unsafe  Pi must wait, and the old resource-allocation state is
+                Needi = Needi � Requesti;
+             If safe ? the resources are allocated to Pi
+             If unsafe ? Pi must wait, and the old resource-allocation state is
             restored
         */
         return true;
