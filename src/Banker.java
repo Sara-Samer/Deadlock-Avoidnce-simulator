@@ -65,9 +65,16 @@ public class Banker{
                         finish[i]=true;
                     	processSequence[count++] = i;
                         //if we remove this process we must return there resource to the work array
+                        System.out.println("Available:");
+                    	for(int k= 0 ; k < nResources; k++) {
+                    		System.out.print("R" + (k+1) + "  ");
+                    	}
+                    	System.out.println();
                         for (int k = 0; k < nResources ; k++) { 
                         	work[k] += allocated[i][k];
+                        	System.out.print(work[k] + "  ");
                         }
+                        System.out.println();
                         // and we must search from the first because we can find new process with the new values
                         i = -1;           
                     }
@@ -92,12 +99,18 @@ public class Banker{
         //     Available = Available - Requesti;
         //     Allocationi = Allocationi + Requesti;
         //     Needi = Needi - Requesti;
-        for (int i = 0; i < this.nResources; i++) {
+        System.out.println("Available:");
+    	for(int k= 0 ; k < nResources; k++) {
+    		System.out.print("R" + (k+1) + "  ");
+    	}
+    	System.out.println();
+    	for (int i = 0; i < this.nResources; i++) {
             this.available[i] -= newRequest[i];
+            System.out.print(this.available[i] + "  ");
             this.allocated[process][i] += newRequest[i];
             this.need[process][i] -= newRequest[i];
         }
-
+		System.out.println();
         //Restore the old resource-allocation state
         if(!this.isSafe()){
             this.restoreOldState(process, newRequest);
@@ -124,11 +137,18 @@ public class Banker{
         return false;
     }
     private void restoreOldState(int process, int[] newRequest){
+    	System.out.println("Available:");
+    	for(int k= 0 ; k < nResources; k++) {
+    		System.out.print("R" + (k+1) + "  ");
+    	}
+    	System.out.println();
         for (int i = 0; i < this.nResources; i++) {
             this.available[i] += newRequest[i];
+            System.out.print(this.available[i] + "  ");
             this.allocated[process][i] -= newRequest[i];
             this.need[process][i] += newRequest[i];
         }
+    	System.out.println();
         this.isSafe();
     }
 }
