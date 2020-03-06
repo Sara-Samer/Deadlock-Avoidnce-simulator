@@ -30,42 +30,46 @@ public class Banker{
     }
     public boolean isSafe(){
         //TODO test safety Algorithm
-        int []work = available;                         // 1.Let Work and Finish be vectors of length m and n, respectively. // Initialize: Work = Available
+        int[] work = new int[nResources];                         // 1.Let Work and Finish be vectors of length m and n, respectively. // Initialize: Work = Available
+        for(int i = 0 ; i < nResources; i++)
+        	work[i] = available[i];
+        
         Boolean[] finish = new Boolean[nProcesses];     //  Finish [i] = false for i = 0, 1, ..., n- 1
         Arrays.fill(finish, Boolean.FALSE);
-
-                                                        /*
+        
+        int[] processes = new int[nProcesses];
+        Arrays.fill(processes, -1);
+        												/*
                                                         Need: n * m matrix. If Need[i, j] = k, then Pi may need k more instances of Rj to complete its task
                                                          */
         this.addNeed();
-//        for (int i = 0; i <nProcesses ; i++) {
-//            for (int j = 0; j <nResources ; j++) {
-//                //Need [i, j] = Max[i, j] – Allocation [i, j]
-//                need[i][j]=maximum[i][j]-allocated[i][j];
-//            }
-//        }
-        boolean unsafeState=false;
+        
         int count = 0;
         for (int i = 0; i <nProcesses ; i++){ //Find an i such that both:
-            if(!finish[i] ){     //a) Finish [i] = false //            (b) Needi <= Work
+            if(!finish[i] ){     //a) Finish [i] = false //            (b) Need i <= Work
                 for (int j = 0; j <nResources ; j++) {
-                    if(!(need[i][j]<= work[j])){	//or = ???????????????????????
+                    if((need[i][j] > work[j])){
                         break;
                     }
-                    //nProcesses????????????????????
                     if(j==nResources-1) {   // if true then we can remove this process
                         count++;
                     	finish[i]=true;
+                    	processes[count - 1] = i;
                         for (int k = 0; k < nResources ; k++) { //if we remove this process we must return there resource to the work array
-                            if(need[i][j]<= work[j]){
-                                work[j] += allocated[i][j];
-                            }
+                        	work[k] += allocated[i][k];
                         }
-                        i=0;           // and we must search from the first because we can find new process with the new values
+                        i = -1;           // and we must search from the first because we can find new process with the new values
                     }
                 }
             }
+            
             if(count == nProcesses) {
+            	System.out.println("The sequence to satisfy the safety criteria: ");
+            	for(i = 0 ; i < count ; i++) {
+            		System.out.print("P" + processes[i]);
+            		if(i != count - 1)	System.out.print(", ");
+            	}
+            	System.out.println();
                 return true; // if we finish all the array we can say "we are at the safe state "
             }
         }
