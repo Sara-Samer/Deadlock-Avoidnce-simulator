@@ -46,12 +46,13 @@ public class Main{
     			System.out.print("R" + (i+1) + " : ");
     			sc.reset();
     			bn.addResource(i, sc.nextInt());
-    		}
-			System.out.println("-----------------------------------");
+			}
 			sc.close();
+			System.out.println("-----------------------------------");
     		if(bn.isSafe()){
 				System.out.println("No DeadLock");
 				printSequence(nProcess, bn.getSequence());
+				requestWrapper(bn);
 			}else{
 				System.out.println("DeadLock");
 			}
@@ -66,7 +67,6 @@ public class Main{
 			// if we finish all the array we can say "we are at the safe state "
 	}
 	public static void requestMore(Banker bn){
-		System.out.println("Do you want to make more requests?");
 		Scanner sc = new Scanner(System.in);
 		System.out.println("Enter Process number: ");
 		int pNum, Rnum = 0;
@@ -109,5 +109,16 @@ public class Main{
 				break;
 		}
 		System.out.println(output);
+	}
+	public static void requestWrapper(Banker bn){
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Do you want to request more?\n1-yes\n2-no");
+		int c = sc.nextInt();
+		while(true){
+			requestMore(bn);
+			System.out.println("Do you want to request more?\n1-yes\n2-no");
+			c = sc.nextInt();
+			if(c == 2) break;
+		}
 	}
 }
