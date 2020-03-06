@@ -1,5 +1,7 @@
 import java.util.Scanner;
 
+enum Flag{MAX_CLAIM_EXCEEDED, PROCESS_WAITING, REQUEST_IS_NOT_SAFE, RESOURCES_ALLOCATED};
+
 public class Main{
     public static void main(String[] args) {
     		System.out.print("Processes Number: ");
@@ -48,9 +50,14 @@ public class Main{
     			bn.addResource(i, sc.nextInt());
     		}
     		System.out.println("-----------------------------------");
-    		if(bn.isSafe()) System.out.println("No DeadLock");
-    		else	System.out.println("DeadLock");
-    		//bn.addNeed();
+    		if(bn.isSafe()){
+				System.out.println("No DeadLock");
+				printSequence(nProcess, bn.getSequence());
+			}else{
+				System.out.println("DeadLock");
+			}
+			System.out.println("Do you want to make more requests?");
+			
     		
     		
     		//--------------------------------------------------------------------
@@ -102,7 +109,7 @@ public class Main{
     		}
     		*/
 	}
-	public void printSequence(int count, int[] processSequence){
+	public static void printSequence(int count, int[] processSequence){
 			System.out.println("The sequence to satisfy the safety criteria: ");
 			for(int i = 0 ; i < count ; i++) {
 				System.out.print("P" + processSequence[i]);
