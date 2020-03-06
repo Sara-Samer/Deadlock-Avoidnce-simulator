@@ -1,7 +1,5 @@
 import java.util.Arrays;
 
-enum Flag{MAX_CLAIM_EXCEEDED, PROCESS_WAITING, REQUEST_IS_NOT_SAFE, RESOURCES_ALLOCATED};
-
 public class Banker{
     int[] available;
     int[][] maximum;
