@@ -57,11 +57,59 @@ public class Main{
 					sc.reset();
 					int c = sc.nextInt();
 					if(c == 2) break;
-					requestMore(bn);
+					//requestMore(bn);\
+					System.out.println("Enter Process number: ");
+					int pNum, Rnum = 0;
+					int[] newRequest = new int[bn.nResources];
+					sc.reset();
+					pNum  = sc.nextInt();
+					while(pNum >= bn.nProcesses || pNum < 0){
+						if(pNum == -1) return;
+						System.out.println("process number is not right");
+						System.out.println("Enter Process number or -1 to end: ");
+						sc.reset();
+						pNum  = sc.nextInt(); 
+						continue;
+					}
+					while(true){
+						System.out.println("Enter resource number or -1 to end: ");
+						sc.reset();
+						
+						Rnum = sc.nextInt();
+						if(Rnum > bn.nProcesses || Rnum < 1){
+							if(Rnum == -1) break;
+							System.out.println("resource number is not right");
+							continue;
+						}
+						System.out.println("Enter resource Value: ");
+						sc.reset();
+						newRequest[Rnum] = sc.nextInt();
+					}
+					//sc.close();
+					Flag f = bn.canGrantRequest(pNum, newRequest);
+					String output = "";
+					switch (f) {
+						case REQUEST_IS_NOT_SAFE:
+							output = "Process request will make the state unsafe";
+							break;
+							
+						case MAX_CLAIM_EXCEEDED:
+							output = "Process Exceeded maximum claim";
+							break;
+					
+						case PROCESS_WAITING:
+							output = "Process is waiting...";
+							break;
+						case RESOURCES_ALLOCATED:
+							output = "Request has been granted and the system is safe";
+							break;
+					}
+					System.out.println(output);
 				}
 			}else{
 				System.out.println("DeadLock");
 			}
+    		sc.close();
 	}
 	public static void printSequence(int count, int[] processSequence){
 			System.out.println("The sequence to satisfy the safety criteria: ");
