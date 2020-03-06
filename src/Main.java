@@ -101,5 +101,14 @@ public class Main{
     			System.out.println();
     		}
     		*/
-    }
+	}
+	public void printSequence(int count, int[] processSequence){
+			System.out.println("The sequence to satisfy the safety criteria: ");
+			for(int i = 0 ; i < count ; i++) {
+				System.out.print("P" + processSequence[i]);
+				if(i != count - 1)	System.out.print(", ");
+			}
+			System.out.println();
+			// if we finish all the array we can say "we are at the safe state "
+	}
 }
