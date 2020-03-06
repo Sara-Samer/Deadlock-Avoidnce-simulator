@@ -1,5 +1,7 @@
 import java.util.Arrays;
 
+enum Flag{MAX_CLAIM_EXCEEDED, PROCESS_WAITING, REQUEST_IS_NOT_SAFE, RESOURCES_ALLOCATED};
+
 public class Banker{
     int[] available;
     int[][] maximum;
@@ -83,29 +85,46 @@ public class Banker{
     public int[] getSequence(){
         return this.processSequence;
     }
-    public boolean canGrantRequest(){
-        //TODO Implement Request Algorithm
-        /*
-            Requesti = request vector for process Pi. If
-            Requesti [j] = k then process Pi wants k instances
-            of resource type Rj
-            1.
-                If Requesti ? Needi go to step 2. Otherwise, raise error
-                condition, since process has exceeded its maximum
-                claim
-            2.
-                If Requesti ? Available, go to step 3. Otherwise Pi
-                must wait, since resources are not available
-            3.
-                Pretend to allocate requested resources to Pi by
-                modifying the state as follows:
-                Available = Available � Requesti;
-                Allocationi = Allocationi + Requesti;
-                Needi = Needi � Requesti;
-             If safe ? the resources are allocated to Pi
-             If unsafe ? Pi must wait, and the old resource-allocation state is
-            restored
-        */
-        return true;
+    public Flag canGrantRequest(int process, int[] newRequest){
+        // newRequest = request vector for process "process".
+        //1.If Request[i] > Need[i] raise error condition, since process has exceeded its maximum claim
+        int j = 0;
+        while(newRequest[j] <= need[process][j])
+            ++j;
+        if(j != this.nResources - 1)
+            return Flag.MAX_CLAIM_EXCEEDED; 
+            
+    
+        //2. If Request[i][j] > Available[i][j] Pi must wait, since resources are not available
+        j = 0;
+        while(newRequest[j] <= available[j])
+            ++j;
+        if(j != this.nResources - 1)
+            return Flag.PROCESS_WAITING;
+                
+        // 3.Pretend to allocate requested resources to Pi by modifying the state as follows:
+        //     Available = Available - Requesti;
+        //     Allocationi = Allocationi + Requesti;
+        //     Needi = Needi - Requesti;
+        for (int i = 0; i < this.nResources; i++) {
+            this.available[i] -= newRequest[i];
+            this.allocated[process][i] += newRequest[i];
+            this.need[process][i] -= newRequest[i];
+        }
+        //Restore the old resource-allocation state
+        if(!this.isSafe()){
+            this.restoreOldState(process, newRequest);
+            return Flag.REQUEST_IS_NOT_SAFE;
+        }
+        // the resources are allocated to Pi
+        return Flag.RESOURCES_ALLOCATED;
+    }
+    private void restoreOldState(int process, int[] newRequest){
+        for (int i = 0; i < this.nResources; i++) {
+            this.available[i] += newRequest[i];
+            this.allocated[process][i] -= newRequest[i];
+            this.need[process][i] += newRequest[i];
+        }
+        this.isSafe();
     }
 }
