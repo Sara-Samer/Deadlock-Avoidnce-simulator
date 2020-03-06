@@ -47,64 +47,14 @@ public class Main{
     			sc.reset();
     			bn.addResource(i, sc.nextInt());
     		}
-    		System.out.println("-----------------------------------");
+			System.out.println("-----------------------------------");
+			sc.close();
     		if(bn.isSafe()){
 				System.out.println("No DeadLock");
 				printSequence(nProcess, bn.getSequence());
 			}else{
 				System.out.println("DeadLock");
 			}
-			
-    		
-    		
-    		//--------------------------------------------------------------------
-    		/*System.out.print("All:");
-    		for(int i = 0 ; i < nResources; i++) {
-    			System.out.print("R" + (i+1) + " ");
-    		}
-    		System.out.println();
-    		for(int i = 0; i < nProcess ; i++) {
-    			System.out.print("P" + i + " ");
-    			for(int j = 0 ; j < nResources; j++) {
-    				System.out.print(bn.allocated[i][j]+ "  ");    				
-    			}
-    			System.out.println();
-    		}
-    		System.out.print("Max:");
-    		for(int i = 0 ; i < nResources; i++) {
-    			System.out.print("R" + (i+1) + " ");
-    		}
-    		System.out.println();
-    		for(int i = 0; i < nProcess ; i++) {
-    			System.out.print("P" + i + " ");
-    			for(int j = 0 ; j < nResources; j++) {
-    				System.out.print(bn.maximum[i][j]+ "  ");    				
-    			}
-    			System.out.println();
-    		}
-    		System.out.print("Need");
-    		for(int i = 0 ; i < nResources; i++) {
-    			System.out.print("R" + (i+1) + " ");
-    		}
-    		System.out.println();
-    		for(int i = 0; i < nProcess ; i++) {
-    			System.out.print("P" + i + " ");
-    			for(int j = 0 ; j < nResources; j++) {
-    				System.out.print(bn.need[i][j]+ "  ");    				
-    			}
-    			System.out.println();
-    		}
-    		System.out.print("avail:");
-    		for(int i = 0 ; i < nResources; i++) {
-    			System.out.print("R" + (i+1) + " ");
-    		}
-    		System.out.println();
-    		for(int i = 0; i < nResources ; i++) {
-    				System.out.print(bn.available[i]+ "  ");    				
-    			
-    			System.out.println();
-    		}
-    		*/
 	}
 	public static void printSequence(int count, int[] processSequence){
 			System.out.println("The sequence to satisfy the safety criteria: ");
@@ -139,6 +89,7 @@ public class Main{
 			System.out.println("Enter resource Value: ");
 			newRequest[Rnum] = sc.nextInt();
 		}
+		sc.close();
 		Flag f = bn.canGrantRequest(pNum, newRequest);
 		String output = "";
 		switch (f) {
