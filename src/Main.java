@@ -47,12 +47,19 @@ public class Main{
     			sc.reset();
     			bn.addResource(i, sc.nextInt());
 			}
-			sc.close();
+			sc.reset();
 			System.out.println("-----------------------------------");
     		if(bn.isSafe()){
 				System.out.println("No DeadLock");
 				printSequence(nProcess, bn.getSequence());
-				requestWrapper(bn);
+				while(true){
+					System.out.println("Do you want to request more?\n1-yes\n2-no");
+					sc.reset();
+					int c = sc.nextInt();
+					if(c == 2) break;
+					requestMore(bn);
+					System.out.println("Do you want to request more?\n1-yes\n2-no");
+				}
 			}else{
 				System.out.println("DeadLock");
 			}
@@ -72,12 +79,13 @@ public class Main{
 		int pNum, Rnum = 0;
 		int[] newRequest = new int[bn.nResources];
 		pNum  = sc.nextInt();
-		while(pNum > bn.nProcesses){
+		while(pNum >= bn.nProcesses){
 			System.out.println("process number is not right");
-			System.out.println("Enter Process number: ");
+			System.out.println("Enter Process number or -1 to end: ");
 			pNum  = sc.nextInt(); 
 			continue;
 		}
+		if(pNum < 0) return;
 		while(true){
 			System.out.println("Enter resource number or -1 to end: ");
 			Rnum = sc.nextInt();
@@ -109,17 +117,5 @@ public class Main{
 				break;
 		}
 		System.out.println(output);
-	}
-	public static void requestWrapper(Banker bn){
-		Scanner sc = new Scanner(System.in);
-		System.out.println("Do you want to request more?\n1-yes\n2-no");
-		int c = sc.nextInt();
-		while(true){
-			requestMore(bn);
-			System.out.println("Do you want to request more?\n1-yes\n2-no");
-			c = sc.nextInt();
-			if(c == 2) break;
-		}
-		sc.close();
 	}
 }
