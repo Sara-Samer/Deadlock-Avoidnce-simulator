@@ -47,8 +47,9 @@ public class Main{
     			sc.reset();
     			bn.addResource(i, sc.nextInt());
     		}
+    		System.out.println("-----------------------------------");
     		if(bn.isSafe()) System.out.println("No DeadLock");
-    		//else	System.out.println("DeadLock");
+    		else	System.out.println("DeadLock");
     		//bn.addNeed();
     		
     		
