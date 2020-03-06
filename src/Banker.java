@@ -45,24 +45,27 @@ public class Banker{
 //            }
 //        }
         boolean unsafeState=false;
+        int count = 0;
         for (int i = 0; i <nProcesses ; i++){ //Find an i such that both:
             if(!finish[i] ){     //a) Finish [i] = false //            (b) Needi <= Work
                 for (int j = 0; j <nResources ; j++) {
-                    if(!(need[i][j]<= work[j])){
+                    if(!(need[i][j]<= work[j])){	//or = ???????????????????????
                         break;
                     }
-                    if(j==nProcesses-1) {   // if true then we can remove this process
-                        finish[i]=true;
+                    //nProcesses????????????????????
+                    if(j==nResources-1) {   // if true then we can remove this process
+                        count++;
+                    	finish[i]=true;
                         for (int k = 0; k < nResources ; k++) { //if we remove this process we must return there resource to the work array
                             if(need[i][j]<= work[j]){
-                                work[j]+=allocated[i][j];
+                                work[j] += allocated[i][j];
                             }
                         }
                         i=0;           // and we must search from the first because we can find new process with the new values
                     }
                 }
             }
-            if(finish[nProcesses-1]) {
+            if(count == nProcesses) {
                 return true; // if we finish all the array we can say "we are at the safe state "
             }
         }

@@ -48,7 +48,7 @@ public class Main{
     			bn.addResource(i, sc.nextInt());
     		}
     		
-    		bn.addNeed();
+    		//bn.addNeed();
     		
     		
     		//--------------------------------------------------------------------
