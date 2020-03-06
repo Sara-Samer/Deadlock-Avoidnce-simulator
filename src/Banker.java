@@ -24,13 +24,10 @@ public class Banker{
     public void addMax(int process, int resource, int max){
     	this.maximum[process][resource] = max;
     }
-    /*public void addNeed(){
+    public void addNeed(){
     	for(int i = 0; i< this.nProcesses ; i++)
     		for(int j = 0; j < this.nResources; j++)
     			this.need[i][j] = this.maximum[i][j] - this.allocated[i][j];
-    }*/
-    public void updateNeed(int process, int resource, int value){
-		this.need[process][resource] = value;
     }
     public void addAllocated(int process, int resource, int alloc){
     	this.allocated[process][resource] = alloc;
