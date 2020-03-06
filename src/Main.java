@@ -120,5 +120,6 @@ public class Main{
 			c = sc.nextInt();
 			if(c == 2) break;
 		}
+		sc.close();
 	}
 }
