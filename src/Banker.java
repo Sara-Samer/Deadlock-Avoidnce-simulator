@@ -85,45 +85,62 @@ public class Banker{
     public int[] getSequence(){
         return this.processSequence;
     }
-    public Flag canGrantRequest(int process, int[] newRequest){
+    public Flag canGrantRequest(int[] processes, int[] newRequest){
         // newRequest = request vector for process "process".
         //1.If Request[i] > Need[i] raise error condition, since process has exceeded its maximum claim
-        int j = 0;
-        while(newRequest[j] <= need[process][j])
-            ++j;
-        if(j != this.nResources - 1)
-            return Flag.MAX_CLAIM_EXCEEDED; 
-            
-    
-        //2. If Request[i][j] > Available[i][j] Pi must wait, since resources are not available
-        j = 0;
-        while(newRequest[j] <= available[j])
-            ++j;
-        if(j != this.nResources - 1)
-            return Flag.PROCESS_WAITING;
-                
+        int i = 0;
+        while(i < processes.length){
+            int process = processes[i++];
+            if(this.lessThanNeed(process, newRequest))
+                return Flag.MAX_CLAIM_EXCEEDED; 
+            if(this.lessThanAvailable(newRequest))
+                return Flag.PROCESS_WAITING;
+        }               
         // 3.Pretend to allocate requested resources to Pi by modifying the state as follows:
         //     Available = Available - Requesti;
         //     Allocationi = Allocationi + Requesti;
         //     Needi = Needi - Requesti;
-        for (int i = 0; i < this.nResources; i++) {
-            this.available[i] -= newRequest[i];
-            this.allocated[process][i] += newRequest[i];
-            this.need[process][i] -= newRequest[i];
+        for (int j = 0; j < processes.length; j++) {
+            int process = processes[j];
+            for (i = 0; i < this.nResources; i++) {
+                this.available[i] -= newRequest[i];
+                this.allocated[process][i] += newRequest[i];
+                this.need[process][i] -= newRequest[i];
+            }
         }
         //Restore the old resource-allocation state
         if(!this.isSafe()){
-            this.restoreOldState(process, newRequest);
+            this.restoreOldState(processes, newRequest);
             return Flag.REQUEST_IS_NOT_SAFE;
         }
         // the resources are allocated to Pi
         return Flag.RESOURCES_ALLOCATED;
     }
-    private void restoreOldState(int process, int[] newRequest){
-        for (int i = 0; i < this.nResources; i++) {
-            this.available[i] += newRequest[i];
-            this.allocated[process][i] -= newRequest[i];
-            this.need[process][i] += newRequest[i];
+
+    private boolean lessThanNeed(int process, int[] newRequest){
+        int j = 0;
+        while(newRequest[j] <= need[process][j])
+            ++j;
+        if(j != this.nResources - 1)
+            return true; 
+        return false;
+    }
+    private boolean lessThanAvailable(int[] newRequest){
+        int j = 0;
+        while(newRequest[j] <= available[j])
+            ++j;
+        if(j != this.nResources - 1)
+            return true; 
+        return false;
+    }
+    private void restoreOldState(int[] processes, int[] newRequest){
+        for (int j = 0; j < processes.length; j++) {
+            int process = processes[j];
+            for (int i = 0; i < this.nResources; i++) {
+                this.available[i] += newRequest[i];
+                this.allocated[process][i] -= newRequest[i];
+                this.need[process][i] += newRequest[i];
+            }
         }
         this.isSafe();
     }
