@@ -85,32 +85,27 @@ public class Banker{
     public int[] getSequence(){
         return this.processSequence;
     }
-    public Flag canGrantRequest(int[] processes, int[] newRequest){
+    public Flag canGrantRequest(int process, int[] newRequest){
         // newRequest = request vector for process "process".
         //1.If Request[i] > Need[i] raise error condition, since process has exceeded its maximum claim
-        int i = 0;
-        while(i < processes.length){
-            int process = processes[i++];
-            if(!this.lessThanNeed(process, newRequest))
-                return Flag.MAX_CLAIM_EXCEEDED; 
-            if(!this.lessThanAvailable(newRequest))
-                return Flag.PROCESS_WAITING;
-        }               
+        if(!this.lessThanNeed(process, newRequest))
+            return Flag.MAX_CLAIM_EXCEEDED; 
+        if(!this.lessThanAvailable(newRequest))
+            return Flag.PROCESS_WAITING;
+                    
         // 3.Pretend to allocate requested resources to Pi by modifying the state as follows:
         //     Available = Available - Requesti;
         //     Allocationi = Allocationi + Requesti;
         //     Needi = Needi - Requesti;
-        for (int j = 0; j < processes.length; j++) {
-            int process = processes[j];
-            for (i = 0; i < this.nResources; i++) {
-                this.available[i] -= newRequest[i];
-                this.allocated[process][i] += newRequest[i];
-                this.need[process][i] -= newRequest[i];
-            }
+        for (int i = 0; i < this.nResources; i++) {
+            this.available[i] -= newRequest[i];
+            this.allocated[process][i] += newRequest[i];
+            this.need[process][i] -= newRequest[i];
         }
+
         //Restore the old resource-allocation state
         if(!this.isSafe()){
-            this.restoreOldState(processes, newRequest);
+            this.restoreOldState(process, newRequest);
             return Flag.REQUEST_IS_NOT_SAFE;
         }
         // the resources are allocated to Pi
@@ -133,14 +128,11 @@ public class Banker{
             return true; 
         return false;
     }
-    private void restoreOldState(int[] processes, int[] newRequest){
-        for (int j = 0; j < processes.length; j++) {
-            int process = processes[j];
-            for (int i = 0; i < this.nResources; i++) {
-                this.available[i] += newRequest[i];
-                this.allocated[process][i] -= newRequest[i];
-                this.need[process][i] += newRequest[i];
-            }
+    private void restoreOldState(int process, int[] newRequest){
+        for (int i = 0; i < this.nResources; i++) {
+            this.available[i] += newRequest[i];
+            this.allocated[process][i] -= newRequest[i];
+            this.need[process][i] += newRequest[i];
         }
         this.isSafe();
     }
