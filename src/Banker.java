@@ -91,9 +91,9 @@ public class Banker{
         int i = 0;
         while(i < processes.length){
             int process = processes[i++];
-            if(this.lessThanNeed(process, newRequest))
+            if(!this.lessThanNeed(process, newRequest))
                 return Flag.MAX_CLAIM_EXCEEDED; 
-            if(this.lessThanAvailable(newRequest))
+            if(!this.lessThanAvailable(newRequest))
                 return Flag.PROCESS_WAITING;
         }               
         // 3.Pretend to allocate requested resources to Pi by modifying the state as follows:

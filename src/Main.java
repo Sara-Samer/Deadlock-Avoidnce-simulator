@@ -56,7 +56,6 @@ public class Main{
 			}else{
 				System.out.println("DeadLock");
 			}
-			System.out.println("Do you want to make more requests?");
 			
     		
     		
@@ -117,5 +116,16 @@ public class Main{
 			}
 			System.out.println();
 			// if we finish all the array we can say "we are at the safe state "
+	}
+	public static void requestMore(Banker bn){
+		System.out.println("Do you want to make more requests?");
+			String addAnother = "y";
+			Scanner sc = new Scanner(System.in);
+			while(addAnother.equals("y")){
+				System.out.println("Enter Process number: ");
+				int num = sc.nextInt();
+				num--;
+				if(num >)
+			}
 	}
 }
