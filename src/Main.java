@@ -1,7 +1,5 @@
 import java.util.Scanner;
 
-enum Flag{MAX_CLAIM_EXCEEDED, PROCESS_WAITING, REQUEST_IS_NOT_SAFE, RESOURCES_ALLOCATED};
-
 public class Main{
     public static void main(String[] args) {
     		System.out.print("Processes Number: ");
@@ -119,13 +117,46 @@ public class Main{
 	}
 	public static void requestMore(Banker bn){
 		System.out.println("Do you want to make more requests?");
-			String addAnother = "y";
-			Scanner sc = new Scanner(System.in);
-			while(addAnother.equals("y")){
-				System.out.println("Enter Process number: ");
-				int num = sc.nextInt();
-				num--;
-				if(num >)
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter Process number: ");
+		int pNum, Rnum = 0;
+		int[] newRequest = new int[bn.nResources];
+		pNum  = sc.nextInt();
+		while(pNum > bn.nProcesses){
+			System.out.println("process number is not right");
+			System.out.println("Enter Process number: ");
+			pNum  = sc.nextInt(); 
+			continue;
+		}
+		while(true){
+			System.out.println("Enter resource number or -1 to end: ");
+			Rnum = sc.nextInt();
+			if(Rnum >= bn.nProcesses){
+				System.out.println("resource number is not right");
+				continue;
 			}
+			if(Rnum == -1) break;
+			System.out.println("Enter resource Value: ");
+			newRequest[Rnum] = sc.nextInt();
+		}
+		Flag f = bn.canGrantRequest(pNum, newRequest);
+		String output = "";
+		switch (f) {
+			case REQUEST_IS_NOT_SAFE:
+				output = "Process request will make the state unsafe";
+				break;
+				
+			case MAX_CLAIM_EXCEEDED:
+				output = "Process Exceeded maximum claim";
+				break;
+		
+			case PROCESS_WAITING:
+				output = "Process is waiting...";
+				break;
+			case RESOURCES_ALLOCATED:
+				output = "Request has been granted and the system is safe";
+				break;
+		}
+		System.out.println(output);
 	}
 }
