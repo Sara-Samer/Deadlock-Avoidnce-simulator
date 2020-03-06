@@ -5,12 +5,14 @@ public class Banker{
     int[][] maximum;
     int[][] allocated;
     int[][] need;
+    int[] processSequence;
     int nResources,nProcesses;
     Banker(int nResources, int nProcesses){
         available = new int[nResources];
         maximum = new int[nProcesses][nResources];
         allocated = new int[nProcesses][nResources];
         need = new int[nProcesses][nResources];
+        processSequence = new int[nProcesses];
         this.nResources= nResources;
         this.nProcesses= nProcesses;
     }
@@ -20,60 +22,66 @@ public class Banker{
     public void addMax(int process, int resource, int max){
     	this.maximum[process][resource] = max;
     }
-    public void addNeed(){
+    /*public void addNeed(){
     	for(int i = 0; i< this.nProcesses ; i++)
     		for(int j = 0; j < this.nResources; j++)
     			this.need[i][j] = this.maximum[i][j] - this.allocated[i][j];
+    }*/
+    public void updateNeed(int process, int resource, int value){
+		this.need[process][resource] = value;
     }
     public void addAllocated(int process, int resource, int alloc){
     	this.allocated[process][resource] = alloc;
     }
     public boolean isSafe(){
         //TODO test safety Algorithm
-        int[] work = new int[nResources];                         // 1.Let Work and Finish be vectors of length m and n, respectively. // Initialize: Work = Available
+        // 1.Let Work and Finish be vectors of length m and n, respectively. 
+
+        // Initialize: Work = Available
+        int[] work = new int[nResources];                         
         for(int i = 0 ; i < nResources; i++)
-        	work[i] = available[i];
-        
-        Boolean[] finish = new Boolean[nProcesses];     //  Finish [i] = false for i = 0, 1, ..., n- 1
+            work[i] = available[i];
+            
+        //  Finish [i] = false for i = 0, 1, ..., n- 1
+        Boolean[] finish = new Boolean[nProcesses];     
         Arrays.fill(finish, Boolean.FALSE);
         
-        int[] processes = new int[nProcesses];
-        Arrays.fill(processes, -1);
-        												/*
-                                                        Need: n * m matrix. If Need[i, j] = k, then Pi may need k more instances of Rj to complete its task
-                                                         */
-        this.addNeed();
+        
+        //Need: n * m matrix. 
+        //If Need[i, j] = k, then Pi may need k more instances of Rj to complete its task
+        Arrays.fill(processSequence, -1);
+        												
+        //this.addNeed();
         
         int count = 0;
-        for (int i = 0; i <nProcesses ; i++){ //Find an i such that both:
-            if(!finish[i] ){     //a) Finish [i] = false //            (b) Need i <= Work
+        for (int i = 0; i <nProcesses ; i++){ 
+            //Find an i such that both:
+            //(a) Finish [i] = false 
+            //(b) Need[i] <= Work aka: available
+            if(!finish[i] ){      
                 for (int j = 0; j <nResources ; j++) {
                     if((need[i][j] > work[j])){
                         break;
                     }
-                    if(j==nResources-1) {   // if true then we can remove this process
-                        count++;
-                    	finish[i]=true;
-                    	processes[count - 1] = i;
-                        for (int k = 0; k < nResources ; k++) { //if we remove this process we must return there resource to the work array
+                    //If true then we can remove this process
+                    if(j == nResources-1) {   
+                        finish[i]=true;
+                    	processSequence[count++] = i;
+                        //if we remove this process we must return there resource to the work array
+                        for (int k = 0; k < nResources ; k++) { 
                         	work[k] += allocated[i][k];
                         }
-                        i = -1;           // and we must search from the first because we can find new process with the new values
+                        // and we must search from the first because we can find new process with the new values
+                        i = -1;           
                     }
                 }
             }
-            
-            if(count == nProcesses) {
-            	System.out.println("The sequence to satisfy the safety criteria: ");
-            	for(i = 0 ; i < count ; i++) {
-            		System.out.print("P" + processes[i]);
-            		if(i != count - 1)	System.out.print(", ");
-            	}
-            	System.out.println();
-                return true; // if we finish all the array we can say "we are at the safe state "
-            }
         }
-        return false; // if we finished the for i loop with out return true so we are in unsafe state
+        // if we finished the for i loop with out return true so we are in unsafe state
+        return count == this.nProcesses? true: false ; 
+    }
+    public int[] getSequence(){
+        return this.processSequence;
     }
     public boolean canGrantRequest(){
         //TODO Implement Request Algorithm
@@ -91,9 +99,9 @@ public class Banker{
             3.
                 Pretend to allocate requested resources to Pi by
                 modifying the state as follows:
-                Available = Available – Requesti;
+                Available = Available ï¿½ Requesti;
                 Allocationi = Allocationi + Requesti;
-                Needi = Needi – Requesti;
+                Needi = Needi ï¿½ Requesti;
              If safe ? the resources are allocated to Pi
              If unsafe ? Pi must wait, and the old resource-allocation state is
             restored
