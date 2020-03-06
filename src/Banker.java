@@ -48,7 +48,7 @@ public class Banker{
         //If Need[i, j] = k, then Pi may need k more instances of Rj to complete its task
         Arrays.fill(processSequence, -1);
         												
-        //this.addNeed();
+        this.addNeed();
         
         int count = 0;
         for (int i = 0; i <nProcesses ; i++){ 
