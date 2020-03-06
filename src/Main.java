@@ -58,7 +58,6 @@ public class Main{
 					int c = sc.nextInt();
 					if(c == 2) break;
 					requestMore(bn);
-					System.out.println("Do you want to request more?\n1-yes\n2-no");
 				}
 			}else{
 				System.out.println("DeadLock");
@@ -79,21 +78,21 @@ public class Main{
 		int pNum, Rnum = 0;
 		int[] newRequest = new int[bn.nResources];
 		pNum  = sc.nextInt();
-		while(pNum >= bn.nProcesses){
+		while(pNum >= bn.nProcesses || pNum < 0){
+			if(pNum == -1) return;
 			System.out.println("process number is not right");
 			System.out.println("Enter Process number or -1 to end: ");
 			pNum  = sc.nextInt(); 
 			continue;
 		}
-		if(pNum < 0) return;
 		while(true){
 			System.out.println("Enter resource number or -1 to end: ");
 			Rnum = sc.nextInt();
-			if(Rnum >= bn.nProcesses){
+			if(Rnum > bn.nProcesses || Rnum < 1){
+				if(Rnum == -1) break;
 				System.out.println("resource number is not right");
 				continue;
 			}
-			if(Rnum == -1) break;
 			System.out.println("Enter resource Value: ");
 			newRequest[Rnum] = sc.nextInt();
 		}
